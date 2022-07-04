@@ -18,7 +18,7 @@ jobs:
       - checkout
       - run: echo "This is the build job"
       - run: docker build . -t $DOCKERHUB_USERNAME/$PROJECT_NAME:$CIRCLE_SHA1 -t $DOCKERHUB_USERNAME/$PROJECT_NAME:$ENVIRONMENT
-      - run: docker push --all-tags $DOCKERHUB_USERNAME/$PROJECT_NAME:$CIRCLE_SHA1
+      - run: docker push --all-tags $DOCKERHUB_USERNAME/$PROJECT_NAME
   test:
     executor: node-executor
     steps:
