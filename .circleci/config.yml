@@ -6,7 +6,7 @@ executors:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-      - environment:
+        environment:
           PROJECT_NAME: circleci-poc
 
 # Define the jobs we want to run for this project
