@@ -1,0 +1,63 @@
+version: 2.1
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:18.4.0
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+
+# Define the jobs we want to run for this project
+jobs:
+  build:
+    executor: node-executor
+    steps:
+      - checkout
+      - run: echo "This is the build job"
+      - run: docker build . -t $DOCKERHUB_USERNAME/$CIRCLE_SHA1 -t $DOCKERHUB_USERNAME/$ENVIRONMENT
+      - run: docker push --all-tags $DOCKERHUB_USERNAME/$CIRCLE_SHA1
+  test:
+    executor: node-executor
+    steps:
+      - checkout
+      - run: echo "this is the test job"
+      = run: npm install
+      - run: npm test
+  test-e2e:
+    executor: node-executor
+    steps:
+      - checkout
+      - run: echo "this is the test job"
+      = run: npm install
+      - run: npm test:e2e
+  deploy:
+    executor: node-executor
+    steps:
+      - run: docker pull $DOCKERHUB_USERNAME/$CIRCLE_SHA1
+      - run: echo "deploying in a imaginary place"
+
+
+# Orchestrate our job run sequence
+workflows:
+  build_and_test:
+    jobs:
+      - test:
+          context:
+            - org-basic-context
+      - test-e2e:
+          context:
+            - org-basic-context
+      - build:
+          context:
+            - org-basic-context
+          requires:
+            - test
+            - test-e2e
+          filters:
+            branches:
+              only:
+                - main
+      - request_deployment:
+          type: approval
+          requires:
+            - build
