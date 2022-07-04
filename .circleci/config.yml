@@ -56,7 +56,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - master
       - request_deployment:
           type: approval
           requires:
