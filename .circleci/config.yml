@@ -21,14 +21,14 @@ jobs:
     steps:
       - checkout
       - run: echo "this is the test job"
-      = run: npm install
+      - run: npm install
       - run: npm test
   test-e2e:
     executor: node-executor
     steps:
       - checkout
       - run: echo "this is the test job"
-      = run: npm install
+      - run: npm install
       - run: npm test:e2e
   deploy:
     executor: node-executor
