@@ -60,4 +60,7 @@ workflows:
       - request_deployment:
           type: approval
           requires:
-            - build
+          - build
+      - deployment:
+          context:
+            - org-basic-context
