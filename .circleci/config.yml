@@ -12,6 +12,7 @@ jobs:
   build:
     executor: node-executor
     steps:
+      - setup_remote_docker
       - checkout
       - run: echo "This is the build job"
       - run: docker build . -t $DOCKERHUB_USERNAME/$CIRCLE_SHA1 -t $DOCKERHUB_USERNAME/$ENVIRONMENT
@@ -29,10 +30,11 @@ jobs:
       - checkout
       - run: echo "this is the test job"
       - run: npm install
-      - run: npm test:e2e
+      - run: npm run test:e2e
   deploy:
     executor: node-executor
     steps:
+      - setup_remote_docker
       - run: docker pull $DOCKERHUB_USERNAME/$CIRCLE_SHA1
       - run: echo "deploying in a imaginary place"
 
@@ -64,3 +66,5 @@ workflows:
       - deploy:
           context:
             - org-basic-context
+          requires:
+            - request_deployment
