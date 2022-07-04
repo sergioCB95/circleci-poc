@@ -6,6 +6,8 @@ executors:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
+      - environment:
+          PROJECT_NAME: circleci-poc
 
 # Define the jobs we want to run for this project
 jobs:
@@ -15,8 +17,8 @@ jobs:
       - setup_remote_docker
       - checkout
       - run: echo "This is the build job"
-      - run: docker build . -t $DOCKERHUB_USERNAME/$CIRCLE_SHA1 -t $DOCKERHUB_USERNAME/$ENVIRONMENT
-      - run: docker push --all-tags $DOCKERHUB_USERNAME/$CIRCLE_SHA1
+      - run: docker build . -t $DOCKERHUB_USERNAME/$PROJECT_NAME:$CIRCLE_SHA1 -t $DOCKERHUB_USERNAME/$PROJECT_NAME:$ENVIRONMENT
+      - run: docker push --all-tags $DOCKERHUB_USERNAME/$PROJECT_NAME:$CIRCLE_SHA1
   test:
     executor: node-executor
     steps:
@@ -35,7 +37,7 @@ jobs:
     executor: node-executor
     steps:
       - setup_remote_docker
-      - run: docker pull $DOCKERHUB_USERNAME/$CIRCLE_SHA1
+      - run: docker pull $DOCKERHUB_USERNAME/$PROJECT_NAME:$CIRCLE_SHA1
       - run: echo "deploying in a imaginary place"
 
 
